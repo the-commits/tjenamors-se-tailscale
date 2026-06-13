@@ -2,3 +2,5 @@
 tailscale_auth_key: ""
 tailscale_state_dir: "/var/lib/tailscale"
 tailscale_extra_args: ""
+tailscale_set_hostname: true
+tailscale_hostname: ""

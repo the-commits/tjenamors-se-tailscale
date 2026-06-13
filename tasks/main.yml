@@ -1,4 +1,16 @@
 ---
+- name: Set system hostname
+  ansible.builtin.hostname:
+    name: "{{ tailscale_hostname | default(inventory_hostname) }}"
+  when: tailscale_set_hostname | default(true)
+
+- name: Ensure hostname in /etc/hosts
+  ansible.builtin.lineinfile:
+    path: /etc/hosts
+    regexp: '^127\.0\.1\.1\s+'
+    line: "127.0.1.1   {{ tailscale_hostname | default(inventory_hostname) }}"
+  when: tailscale_set_hostname | default(true)
+
 - name: Include OS-specific variables
   ansible.builtin.include_vars: "{{ item }}"
   with_first_found:
