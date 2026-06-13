@@ -1,0 +1,16 @@
+namespace: tjenamors
+name: tailscale
+version: 0.0.1
+readme: README.md
+authors:
+  - the-commits
+description: An Ansible role to install and configure Tailscale VPN
+license:
+  - AGPL-3.0
+tags:
+  - vpn
+  - tailscale
+  - networking
+dependencies: {}
+repository: https://git.sr.ht/~the-commits/tjenamors-se-tailscale
+issues: https://git.sr.ht/~the-commits/tjenamors-se-tailscale
