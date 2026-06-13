@@ -1,15 +1,20 @@
 ---
 - name: Set system hostname (static + transient)
   ansible.builtin.command:
-    cmd: "hostnamectl set-hostname --static {{ tailscale_hostname | default(inventory_hostname) }}"
+    argv:
+      - hostnamectl
+      - set-hostname
+      - "--static"
+      - "{{ tailscale_hostname if tailscale_hostname | length > 0 else inventory_hostname }}"
   when: tailscale_set_hostname | default(true)
-  changed_when: true
 
 - name: Set transient hostname
   ansible.builtin.command:
-    cmd: "hostnamectl set-hostname {{ tailscale_hostname | default(inventory_hostname) }}"
+    argv:
+      - hostnamectl
+      - set-hostname
+      - "{{ tailscale_hostname if tailscale_hostname | length > 0 else inventory_hostname }}"
   when: tailscale_set_hostname | default(true)
-  changed_when: true
 
 - name: Ensure hostname in /etc/hosts
   ansible.builtin.lineinfile:
@@ -74,5 +79,8 @@
 
 - name: Sync tailscale hostname with system hostname
   ansible.builtin.command:
-    cmd: "tailscale set --hostname={{ tailscale_hostname | default(inventory_hostname) }}"
+    argv:
+      - tailscale
+      - set
+      - "--hostname={{ tailscale_hostname if tailscale_hostname | length > 0 else inventory_hostname }}"
   when: tailscale_set_hostname | default(true)
