@@ -35,6 +35,12 @@
   failed_when: false
   register: tailscale_status
 
+- name: Determine if Tailscale needs authentication
+  ansible.builtin.set_fact:
+    tailscale_needs_auth: >-
+      {{ (tailscale_status.stdout | from_json).BackendState != 'Running' }}
+  when: tailscale_status.rc == 0 and tailscale_status.stdout | length > 0
+
 - name: Authenticate with Tailscale
   ansible.builtin.command:
     cmd: >-
@@ -43,6 +49,6 @@
       {{ tailscale_extra_args }}
   when:
     - tailscale_auth_key | length > 0
-    - tailscale_status.rc != 0 or tailscale_status.stdout == ""
+    - tailscale_needs_auth | default(true)
   register: tailscale_up
   changed_when: tailscale_up.rc == 0
